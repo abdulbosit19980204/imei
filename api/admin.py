@@ -47,9 +47,9 @@ class BolimAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Boshqarma, BoshqarmaAdmin)
-admin.site.register(Imei, ImeiAdmin)
-admin.site.register(SimCard, SimCardAdmin)
+admin.site.register(Bolim, BolimAdmin)
+admin.site.register(Unvon, UnvonAdmin)
 admin.site.register(CustomUser, CustomUserAdmin)
 admin.site.register(Device, DeviceAdmin)
-admin.site.register(Unvon, UnvonAdmin)
-admin.site.register(Bolim, BolimAdmin)
+admin.site.register(Imei, ImeiAdmin)
+admin.site.register(SimCard, SimCardAdmin)
