@@ -1,6 +1,13 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+STATUS_CHOICES = [
+    ('yoqolgan', "Yo'qoldi"),
+    ('ogirlatilgan', "O'girlatilgan"),
+    ('unitilgan', 'Unitib Qoldirilgan'),
+    ('topilgan', 'Topilgan'),
+]
+
 
 class BaseModel(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
@@ -49,6 +56,11 @@ class Device(BaseModel, models.Model):
     model = models.CharField(max_length=255)
     color = models.CharField(max_length=255)
     info = models.TextField()
+    status = models.CharField(
+        max_length=50,
+        choices=STATUS_CHOICES,
+        default='yoqolgan',
+    )
 
     def __str__(self):
         return self.name
