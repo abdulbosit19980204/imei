@@ -41,8 +41,8 @@ class Unvon(BaseModel, models.Model):
 
 class CustomUser(BaseModel, User, models.Model):
     father_name = models.CharField(max_length=50, blank=True, null=True)
-    phone_number = models.CharField(max_length=13)
-    jton = models.CharField(max_length=8)
+    phone_number = models.CharField(max_length=13, unique=True)
+    jton = models.CharField(max_length=8, unique=True)
     boshqarma = models.ForeignKey(Boshqarma, on_delete=models.SET_NULL, null=True)
     bolim = models.ForeignKey(Bolim, on_delete=models.SET_NULL, null=True)
     unvon = models.ForeignKey(Unvon, on_delete=models.SET_NULL, null=True)
