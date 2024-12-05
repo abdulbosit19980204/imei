@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 
-from api.models import Boshqarma, Imei, SimCard, CustomUser, Device, Unvon, Bolim
+from api.models import Boshqarma, Imei, SimCard, CustomUser, Device, Unvon, Bolim, PrimaryData, UserProfile
 
 
 class BoshqarmaAdmin(admin.ModelAdmin):
@@ -22,10 +22,10 @@ class SimCardAdmin(admin.ModelAdmin):
         fields = '__all__'
 
 
-class CustomUserAdmin(UserAdmin):
-    class Meta:
-        model = CustomUser
-        fields = '__all__'
+# class CustomUserAdmin(UserAdmin):
+#     class Meta:
+#         model = CustomUser
+#         # fields = '__all__'
 
 
 class DeviceAdmin(admin.ModelAdmin):
@@ -49,7 +49,10 @@ class BolimAdmin(admin.ModelAdmin):
 admin.site.register(Boshqarma, BoshqarmaAdmin)
 admin.site.register(Bolim, BolimAdmin)
 admin.site.register(Unvon, UnvonAdmin)
-admin.site.register(CustomUser, CustomUserAdmin)
+admin.site.register(CustomUser)
+# admin.site.register(CustomUser, CustomUserAdmin)
 admin.site.register(Device, DeviceAdmin)
 admin.site.register(Imei, ImeiAdmin)
 admin.site.register(SimCard, SimCardAdmin)
+admin.site.register(UserProfile)
+admin.site.register(PrimaryData)
