@@ -25,8 +25,12 @@ class BaseModel(models.Model):
 
     def delete(self, *args, **kwargs):
         """Override the delete method to implement soft delete."""
-        self.is_deleted = True
-        self.save()
+        if self.is_deleted:
+            self.is_deleted = False
+            self.save()
+        else:
+            self.is_deleted = True
+            self.save()
 
     def restore(self, *args, **kwargs):
         """Restore a soft-deleted instance."""
@@ -98,6 +102,15 @@ class ArizaModel(BaseModel, models.Model):
 
     def __str__(self):
         return f"{self.owner} {self.imei} {self.model}"
+
+    def delete(self, *args, **kwargs):
+        self.owner.delete()
+        if self.is_deleted:
+            self.is_deleted = False
+        else:
+            self.is_deleted = True
+        self.save()
+        return self
 
 
 class JinoyatIshiModel(BaseModel, models.Model):

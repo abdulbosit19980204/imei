@@ -20,11 +20,23 @@ class CustomUserAdmin(UserAdmin):  # Correct inheritance
     search_fields = ('phone_number', 'jton', 'first_name', 'last_name')
     list_filter = ('ishjoylari',)
     fieldsets = (
-        (None, {'fields': ('username', 'password')}),
+        ("Auth Info", {'fields': ('username', 'password')}),
         ('Personal Info', {'fields': ('first_name', 'last_name', 'father_name', 'phone_number', 'jton')}),
         ('Permissions', {'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions')}),
         ('Important Dates', {'fields': ('last_login', 'date_joined')}),
         ('Work Info', {'fields': ('boshqarma', 'bolim', 'unvon', 'ishjoylari')}),
+    )
+
+
+class ClientDataAdmin(admin.ModelAdmin):
+    model = ClientData
+    list_display = ('id', 'first_name', 'last_name', 'father_name', 'phone_number', 'jshir', 'is_deleted')
+    list_display_links = ('id', 'phone_number')
+    search_fields = ('phone_number', 'jshir', 'first_name', 'last_name')
+    list_filter = ('phone_number',)
+    fieldsets = (
+        ('Client Info', {'fields': ('first_name', 'last_name', 'father_name', 'phone_number', 'jshir')}),
+        ('Change Info', {'fields': ('is_deleted',)}),
     )
 
 
@@ -47,10 +59,16 @@ class BolimAdmin(admin.ModelAdmin):
 class ArizaModelAdmin(admin.ModelAdmin):
     model = ArizaModel
     list_display = (
-        'id', 'author', 'status', 'imei', 'last_simcard', 'model', 'color', 'created_at', 'updated_at', 'is_deleted')
+        'id', 'author', 'owner', 'status', 'imei', 'last_simcard', 'model', 'color', 'created_at', 'updated_at',
+        'is_deleted')
     list_display_links = ('id', 'imei')
-    list_filter = ('status', 'model', 'color')
+    list_filter = ('status', 'model', 'color', 'is_deleted')
     search_fields = ('imei', 'model', 'color')
+    fieldsets = (
+        ('Ariza Info', {'fields': ('author', 'status', 'imei', 'last_simcard', 'model', 'color')}),
+        ('Owner Info', {'fields': ('owner',)}),
+        ('Change Info', {'fields': ('is_deleted',)}),
+    )
 
 
 admin.site.register(Boshqarma, BoshqarmaAdmin)
@@ -59,6 +77,6 @@ admin.site.register(Unvon, UnvonAdmin)
 # admin.site.register(CustomUser)
 admin.site.register(CustomUser, CustomUserAdmin)
 
-admin.site.register(ClientData)
+admin.site.register(ClientData, ClientDataAdmin)
 admin.site.register(ArizaModel, ArizaModelAdmin)
 admin.site.register(JinoyatIshiModel)
