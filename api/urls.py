@@ -1,6 +1,9 @@
-from django.urls import path
-from .views import index
+from django.urls import path, include
+from api.views import CustomUserViewSet
+from rest_framework import routers
 
 urlpatterns = [
-    path('', index, name='index'),
 ]
+router = routers.SimpleRouter()
+router.register('users', CustomUserViewSet, basename='users')
+urlpatterns += router.urls

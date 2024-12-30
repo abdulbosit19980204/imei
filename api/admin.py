@@ -1,7 +1,8 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 
-from api.models import Boshqarma, Imei, SimCard, CustomUser, Device, Unvon, Bolim, PrimaryData, UserProfile
+from api.models import Boshqarma, Imei, SimCard, CustomUser, Device, Unvon, Bolim, ClientData, ArizaModel, \
+    JinoyatIshiModel
 
 
 class BoshqarmaAdmin(admin.ModelAdmin):
@@ -54,5 +55,6 @@ admin.site.register(CustomUser)
 admin.site.register(Device, DeviceAdmin)
 admin.site.register(Imei, ImeiAdmin)
 admin.site.register(SimCard, SimCardAdmin)
-admin.site.register(UserProfile)
-admin.site.register(PrimaryData)
+admin.site.register(ClientData)
+admin.site.register(ArizaModel)
+admin.site.register(JinoyatIshiModel)
