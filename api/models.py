@@ -23,6 +23,16 @@ class BaseModel(models.Model):
     class Meta:
         abstract = True
 
+    def delete(self, *args, **kwargs):
+        """Override the delete method to implement soft delete."""
+        self.is_deleted = True
+        self.save()
+
+    def restore(self, *args, **kwargs):
+        """Restore a soft-deleted instance."""
+        self.is_deleted = False
+        self.save()
+
 
 class Boshqarma(BaseModel, models.Model):
     name = models.CharField(max_length=255)
@@ -61,7 +71,7 @@ class CustomUser(BaseModel, AbstractUser):
 
 
 class ClientData(BaseModel, models.Model):
-    first_name = models.CharField(max_length=255)
+    first_name = models.CharField(max_length=255, blank=True, null=True)
     last_name = models.CharField(max_length=255)
     father_name = models.CharField(max_length=255, blank=True, null=True)
     phone_number = models.CharField(max_length=13)

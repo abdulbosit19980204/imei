@@ -1,3 +1,5 @@
+from rest_framework.response import Response
+
 from rest_framework.serializers import ModelSerializer
 from rest_framework import serializers
 from api.models import CustomUser, Bolim, Boshqarma, Unvon, ArizaModel, ClientData
@@ -101,7 +103,7 @@ class ArizaModelSerializer(ModelSerializer):
         clientdata = {
             'jshir': validated_data.pop('jshir'),
             'phone_number': validated_data.pop('phone_number'),
-            'first_name': fish[1],
+            'first_name': (fish[1]) if len(fish) > 1 else None,
             'last_name': fish[0],
             'father_name': " ".join(fish[2:]) if len(fish) > 2 else None,
         }
@@ -120,7 +122,7 @@ class ArizaModelSerializer(ModelSerializer):
         owner_fields = ['first_name', 'last_name', 'father_name', 'phone_number', 'jshir']
         if validated_data['fish']:
             fish = validated_data.pop('fish').split()
-            validated_data['first_name'] = fish[1]
+            validated_data['first_name'] = (fish[1]) if len(fish) > 1 else None
             validated_data['last_name'] = fish[0]
             validated_data['father_name'] = " ".join(fish[2:]) if len(fish) > 2 else None
         owner_data = {field: validated_data.pop(field, None) for field in owner_fields if field in validated_data}
@@ -137,9 +139,3 @@ class ArizaModelSerializer(ModelSerializer):
         instance.save()
 
         return instance
-
-        def delete(self, instance):
-            is_deleted = instance.is_deleted
-            instance.is_deleted = True
-            instance.save()
-            return is_deleted
