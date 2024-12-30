@@ -3,6 +3,9 @@ from django.contrib.auth.admin import UserAdmin
 
 from api.models import Boshqarma, CustomUser, Unvon, Bolim, ClientData, ArizaModel, \
     JinoyatIshiModel
+from django.contrib.auth.models import Permission
+
+admin.site.register(Permission)
 
 
 class BoshqarmaAdmin(admin.ModelAdmin):
@@ -71,6 +74,18 @@ class ArizaModelAdmin(admin.ModelAdmin):
     )
 
 
+class JinoyatIshiModelAdmin(admin.ModelAdmin):
+    model = JinoyatIshiModel
+    list_display = ('id', 'author', 'fish', 'jshir',)
+    list_display_links = ('id', 'fish', 'jshir',)
+    search_fields = ('fish', 'jshir',)
+    list_filter = ('status',)
+    fieldsets = (
+        ('Ariza Info', {'fields': ('author', 'fish', 'jshir', 'info', 'phone_number',)}),
+        ('Change Info', {'fields': ('is_deleted', 'status',)}),
+    )
+
+
 admin.site.register(Boshqarma, BoshqarmaAdmin)
 admin.site.register(Bolim, BolimAdmin)
 admin.site.register(Unvon, UnvonAdmin)
@@ -79,4 +94,4 @@ admin.site.register(CustomUser, CustomUserAdmin)
 
 admin.site.register(ClientData, ClientDataAdmin)
 admin.site.register(ArizaModel, ArizaModelAdmin)
-admin.site.register(JinoyatIshiModel)
+admin.site.register(JinoyatIshiModel, JinoyatIshiModelAdmin)

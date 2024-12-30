@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User, AbstractUser
 
+from api.middleware import get_current_user
+
 STATUS_ARIZA = [
     ('yaratildi', "Yaratildi"),
     ('qidiruvda', "Qidiruvda"),
@@ -23,18 +25,25 @@ class BaseModel(models.Model):
     class Meta:
         abstract = True
 
-    def delete(self, *args, **kwargs):
-        """Override the delete method to implement soft delete."""
+    # def delete(self, *args, **kwargs):
+    #     """Override the delete method to implement soft delete."""
+    #     user = get_current_user()  # Get the user from thread-local storage
+    #     print(user)
+    #     if self.is_deleted:
+    #         if user and user.is_superuser:
+    #             super(BaseModel, self).delete(*args, **kwargs)  # Perform real delete
+    #         else:
+    #             return  # Do nothing if the user is not authorized to delete it permanently
+    #     else:
+    #         self.is_deleted = True
+    #         self.save()
+
+    def soft_delete(self, *args, **kwargs):
+        """Restore a soft-deleted instance."""
         if self.is_deleted:
             self.is_deleted = False
-            self.save()
         else:
-            self.is_deleted = True
-            self.save()
-
-    def restore(self, *args, **kwargs):
-        """Restore a soft-deleted instance."""
-        self.is_deleted = False
+            self.is_deleted = False
         self.save()
 
 
@@ -84,6 +93,14 @@ class ClientData(BaseModel, models.Model):
     def __str__(self):
         return f"{self.first_name} {self.last_name} {self.father_name}"
 
+    # def delete(self, *args, **kwargs):
+    #     if self.is_deleted:
+    #         self.is_deleted = False
+    #     else:
+    #         self.is_deleted = True
+    #     self.save()
+    #     return self
+
 
 class ArizaModel(BaseModel, models.Model):
     author = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
@@ -105,12 +122,12 @@ class ArizaModel(BaseModel, models.Model):
 
     def delete(self, *args, **kwargs):
         self.owner.delete()
-        if self.is_deleted:
-            self.is_deleted = False
-        else:
-            self.is_deleted = True
-        self.save()
-        return self
+    #     if self.is_deleted:
+    #         self.is_deleted = False
+    #     else:
+    #         self.is_deleted = True
+    #     self.save()
+    #     return self
 
 
 class JinoyatIshiModel(BaseModel, models.Model):
