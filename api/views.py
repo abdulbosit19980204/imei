@@ -20,4 +20,4 @@ class ArizaViewSet(ModelViewSet):
     def get_queryset(self):
         if self.request.user.is_superuser:
             return self.queryset
-        return self.queryset.filter(author=self.request.user)
+        return self.queryset.filter(author=self.request.user, is_deleted=False)

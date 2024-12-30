@@ -97,10 +97,13 @@ class ArizaModelSerializer(ModelSerializer):
 
     def create(self, validated_data):
         # Extract client-related data from validated_data
+        fish = validated_data.pop('fish').split()
         clientdata = {
             'jshir': validated_data.pop('jshir'),
             'phone_number': validated_data.pop('phone_number'),
-            'first_name': validated_data.pop('fish'),
+            'first_name': fish[1],
+            'last_name': fish[0],
+            'father_name': " ".join(fish[2:]) if len(fish) > 2 else None,
         }
 
         # Create the owner (ClientData)
@@ -113,8 +116,30 @@ class ArizaModelSerializer(ModelSerializer):
         return ariza
 
     def update(self, instance, validated_data):
-        # Update fields dynamically
+        # Extract and process owner-related fields
+        owner_fields = ['first_name', 'last_name', 'father_name', 'phone_number', 'jshir']
+        if validated_data['fish']:
+            fish = validated_data.pop('fish').split()
+            validated_data['first_name'] = fish[1]
+            validated_data['last_name'] = fish[0]
+            validated_data['father_name'] = " ".join(fish[2:]) if len(fish) > 2 else None
+        owner_data = {field: validated_data.pop(field, None) for field in owner_fields if field in validated_data}
+        # Update owner if data is provided
+        if owner_data:
+            for field, value in owner_data.items():
+                if value is not None:  # Avoid overwriting with None
+                    setattr(instance.owner, field, value)
+            instance.owner.save()
+
+        # Qolgan maydonlarni yangilash
         for field, value in validated_data.items():
             setattr(instance, field, value)
         instance.save()
+
         return instance
+
+        def delete(self, instance):
+            is_deleted = instance.is_deleted
+            instance.is_deleted = True
+            instance.save()
+            return is_deleted
