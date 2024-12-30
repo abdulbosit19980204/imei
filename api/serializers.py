@@ -1,5 +1,5 @@
 from rest_framework.serializers import ModelSerializer
-from api.models import CustomUser, Bolim, Boshqarma, Device, Imei, SimCard, Unvon
+from api.models import CustomUser, Bolim, Boshqarma, Unvon, ArizaModel, ClientData
 
 
 class BoshqarmaSerializer(ModelSerializer):
@@ -51,3 +51,49 @@ class CustomUserSerializer(ModelSerializer):
 
         # Foydalanuvchini qaytaramiz
         return user
+
+    def update(self, instance, validated_data):
+        # Validated_data dagi barcha maydonlarni yangilash
+        for field, value in validated_data.items():
+            if field == 'ishjoylari':  # Many-to-Many maydonlar uchun maxsus ishlov
+                instance.ishjoylari.set(value)
+            elif field == 'jton':  # Parolni sozlash uchun maxsus ishlov
+                instance.set_password(value)
+            else:
+                setattr(instance, field, value)  # Fieldni dinamik ravishda yangilash
+
+        # O'zgarishlarni saqlash
+        instance.save()
+        return instance
+
+
+class ArizaOwnerSerializer(ModelSerializer):
+    class Meta:
+        model = ClientData
+        fields = ['id', 'first_name', 'last_name', 'father_name', 'phone_number', 'jshir', 'phone_number']
+
+
+class ArizaModelSerializer(ModelSerializer):
+    owner = ArizaOwnerSerializer(read_only=True)
+
+    class Meta:
+        model = ArizaModel
+        fields = ['id', 'author', 'status', 'imei', 'last_simcard', 'model', 'color', 'created_at', 'updated_at',
+                  'owner', ]
+
+    def create(self, validated_data):
+        validated_data['author'] = self.context['request'].user.id
+        clientdata = {}
+
+        clientdata['jshir'] = validated_data['jshir']
+        clientdata['phone_number'] = validated_data['phone_number']
+        clientdata['first_name'] = validated_data['fish']
+        validated_data['owner'] = ClientData.objects.create(**clientdata)
+        ariza = ArizaModel.objects.create(**validated_data)
+        return ariza
+
+    def update(self, instance, validated_data):
+        for field, value in validated_data.items():
+            setattr(instance, field, value)
+        instance.save()
+        return instance

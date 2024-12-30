@@ -2,12 +2,15 @@ from django.db import models
 from django.contrib.auth.models import User, AbstractUser
 
 STATUS_ARIZA = [
-    ('yoqolgan', "Yo'qoldi"),
-    ('ogirlatilgan', "O'girlatilgan"),
-    ('topilgan', 'Topilgan'),
+    ('yaratildi', "Yaratildi"),
+    ('qidiruvda', "Qidiruvda"),
+    ('topild', 'Topildi'),
+    ('yopildi', 'Yakunlandi'),
 ]
 STATUS_JINOYAT = [
     ('ochilgan', "Yangi"),
+    ('qaytarilgan', "Qaytarilgan"),
+    ('sud', "Sudga chiqarildi"),
     ('yopildi', 'Yopilgan'),
 ]
 
@@ -54,7 +57,7 @@ class CustomUser(BaseModel, AbstractUser):
     ishjoylari = models.ManyToManyField(Boshqarma, related_name='ishjoylari', blank=True)
 
     def __str__(self):
-        return self.first_name
+        return f"{self.username}: {self.first_name} {self.last_name}"
 
 
 class ClientData(BaseModel, models.Model):
@@ -66,54 +69,6 @@ class ClientData(BaseModel, models.Model):
 
     def __str__(self):
         return f"{self.first_name} {self.last_name} {self.father_name}"
-
-
-class Device(BaseModel, models.Model):
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)  # Qurilma kim tomonidan kiritilgan
-    owner = models.ForeignKey(ClientData, on_delete=models.CASCADE)  # Qurilmaning egasi haqida ma'lumot
-    name = models.CharField(max_length=255)
-    model = models.CharField(max_length=255)
-    color = models.CharField(max_length=255)
-    info = models.TextField()
-    status = models.CharField(
-        max_length=50,
-        choices=STATUS_ARIZA,
-        default='yoqolgan',
-    )
-
-    class Meta:
-        ordering = ['-created_at']
-
-    def __str__(self):
-        return self.name
-
-
-class Imei(BaseModel, models.Model):
-    imei = models.CharField(max_length=255, unique=True)  # IMEI noyob bo‘lishi kerak
-    device = models.ForeignKey(
-        Device,
-        on_delete=models.CASCADE,  # Bitta qurilma o‘chirilsa, bog‘liq IMEI o‘chiriladi
-        null=True,
-        blank=True,  # IMEI ba'zi qurilmalarda bo‘lmaydi
-        related_name='imeis'  # Qurilmaning barcha IMEI ro‘yxatini olish imkoniyati
-    )
-
-    def __str__(self):
-        return self.imei
-
-
-class SimCard(BaseModel, models.Model):
-    number = models.CharField(max_length=255, unique=True)  # SIM karta raqami noyob bo‘lishi kerak
-    device = models.ForeignKey(
-        Device,
-        on_delete=models.CASCADE,  # Qurilma o‘chirilsa, bog‘liq SIM karta o‘chiriladi
-        null=True,
-        blank=True,  # SIM karta ba'zi qurilmalarda bo‘lmaydi
-        related_name='sim_cards'  # Qurilma bilan bog‘liq barcha SIM kartalar ro‘yxatini olish imkoniyati
-    )
-
-    def __str__(self):
-        return self.number
 
 
 class ArizaModel(BaseModel, models.Model):
@@ -128,10 +83,8 @@ class ArizaModel(BaseModel, models.Model):
     status = models.CharField(
         max_length=50,
         choices=STATUS_ARIZA,
-        default='yoqolgan',
+        default='yaratildi',
     )
-
-    description = models.TextField()
 
     def __str__(self):
         return f"{self.owner} {self.imei} {self.model}"
