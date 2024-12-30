@@ -1,4 +1,5 @@
 from rest_framework.serializers import ModelSerializer
+from rest_framework import serializers
 from api.models import CustomUser, Bolim, Boshqarma, Unvon, ArizaModel, ClientData
 
 
@@ -73,26 +74,46 @@ class ArizaOwnerSerializer(ModelSerializer):
         fields = ['id', 'first_name', 'last_name', 'father_name', 'phone_number', 'jshir', 'phone_number']
 
 
+class ArizachiSerializer(ModelSerializer):
+    class Meta:
+        model = CustomUser
+        fields = ['id', 'username']
+
+
 class ArizaModelSerializer(ModelSerializer):
     owner = ArizaOwnerSerializer(read_only=True)
+    author = ArizachiSerializer(read_only=True)
+
+    jshir = serializers.CharField(write_only=True, required=True)  # New field for jshir
+    phone_number = serializers.CharField(write_only=True, required=True)  # New field for phone number
+    fish = serializers.CharField(write_only=True, required=True)  # New field for full name
 
     class Meta:
         model = ArizaModel
-        fields = ['id', 'author', 'status', 'imei', 'last_simcard', 'model', 'color', 'created_at', 'updated_at',
-                  'owner', ]
+        fields = [
+            'id', 'author', 'status', 'imei', 'last_simcard', 'model', 'color', 'created_at', 'updated_at',
+            'owner', 'jshir', 'phone_number', 'fish',  # Added new fields
+        ]
 
     def create(self, validated_data):
-        validated_data['author'] = self.context['request'].user.id
-        clientdata = {}
+        # Extract client-related data from validated_data
+        clientdata = {
+            'jshir': validated_data.pop('jshir'),
+            'phone_number': validated_data.pop('phone_number'),
+            'first_name': validated_data.pop('fish'),
+        }
 
-        clientdata['jshir'] = validated_data['jshir']
-        clientdata['phone_number'] = validated_data['phone_number']
-        clientdata['first_name'] = validated_data['fish']
-        validated_data['owner'] = ClientData.objects.create(**clientdata)
+        # Create the owner (ClientData)
+        owner = ClientData.objects.create(**clientdata)
+
+        # Associate owner with ArizaModel and create the record
+        validated_data['owner'] = owner
+        validated_data['author'] = self.context['request'].user  # Add the author (current user)
         ariza = ArizaModel.objects.create(**validated_data)
         return ariza
 
     def update(self, instance, validated_data):
+        # Update fields dynamically
         for field, value in validated_data.items():
             setattr(instance, field, value)
         instance.save()

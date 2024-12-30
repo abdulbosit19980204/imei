@@ -65,7 +65,7 @@ class ClientData(BaseModel, models.Model):
     last_name = models.CharField(max_length=255)
     father_name = models.CharField(max_length=255, blank=True, null=True)
     phone_number = models.CharField(max_length=13)
-    jshir = models.CharField(max_length=30)
+    jshir = models.CharField(max_length=14)
 
     def __str__(self):
         return f"{self.first_name} {self.last_name} {self.father_name}"
