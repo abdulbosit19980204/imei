@@ -1,8 +1,6 @@
-from rest_framework.response import Response
-
 from rest_framework.serializers import ModelSerializer
 from rest_framework import serializers
-from api.models import CustomUser, Bolim, Boshqarma, Unvon, ArizaModel, ClientData
+from api.models import CustomUser, Bolim, Boshqarma, Unvon, ArizaModel, ClientData, JinoyatIshiModel
 
 
 class BoshqarmaSerializer(ModelSerializer):
@@ -139,3 +137,16 @@ class ArizaModelSerializer(ModelSerializer):
         instance.save()
 
         return instance
+
+
+class JinoyatIshiSerializer(ModelSerializer):
+    author = ArizachiSerializer(read_only=True)
+
+    class Meta:
+        model = JinoyatIshiModel
+        fields = ['id', 'author', 'fish', 'jshir', 'info', 'phone_number', 'status']
+
+    def create(self, validated_data):
+        validated_data['author'] = self.context['request'].user
+        jinoyat = JinoyatIshiModel.objects.create(**validated_data)
+        return jinoyat
