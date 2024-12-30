@@ -73,9 +73,9 @@ class ArizaModelAdmin(admin.ModelAdmin):
 
 class JinoyatIshiModelAdmin(admin.ModelAdmin):
     model = JinoyatIshiModel
-    list_display = ('id', 'author', 'fish', 'jshir',)
+    list_display = ('id', 'author', 'fish', 'jshir', 'jinoyat_raqami',)
     list_display_links = ('id', 'fish', 'jshir',)
-    search_fields = ('fish', 'jshir',)
+    search_fields = ('fish', 'jshir', 'jinoyat_raqami',)
     list_filter = ('status',)
     fieldsets = (
         ('Ariza Info', {'fields': ('author', 'fish', 'jshir', 'info', 'phone_number',)}),

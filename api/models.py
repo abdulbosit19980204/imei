@@ -132,6 +132,7 @@ class ArizaModel(BaseModel, models.Model):
 
 class JinoyatIshiModel(BaseModel, models.Model):
     author = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    jinoyat_raqami = models.CharField(max_length=255)
     fish = models.CharField(max_length=255)
     jshir = models.CharField(max_length=255)
     info = models.TextField()
