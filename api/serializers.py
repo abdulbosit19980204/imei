@@ -21,6 +21,29 @@ class UnvonSerializer(ModelSerializer):
         fields = ['id', 'name']
 
 
+class ProfileSerializer(ModelSerializer):
+    ishjoylari = BoshqarmaSerializer(many=True, read_only=True)
+    bolim = BolimSerializer(read_only=True)
+    boshqarma = BoshqarmaSerializer(many=False, read_only=True)
+    unvon = UnvonSerializer(read_only=True)
+
+    class Meta:
+        model = CustomUser
+        fields = ['id', 'phone_number', 'jton', 'first_name', 'last_name', 'father_name', 'phone_number', 'boshqarma',
+                  'boshqarma',
+                  'bolim',
+                  'unvon',
+                  'ishjoylari']
+        depth = 1
+
+    def delete(self, request, *args, **kwargs):
+        if self.is_deleted:
+            self.is_deleted = False
+        else:
+            self.is_deleted = True
+        self.save()
+
+
 class CustomUserSerializer(ModelSerializer):
     ishjoylari = BoshqarmaSerializer(many=True, read_only=True)
     bolim = BolimSerializer(read_only=True)

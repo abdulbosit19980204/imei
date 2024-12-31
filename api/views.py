@@ -3,7 +3,7 @@ from rest_framework.permissions import IsAuthenticated
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter, OrderingFilter
 
-from api.serializers import CustomUserSerializer, ArizaModelSerializer, JinoyatIshiSerializer
+from api.serializers import CustomUserSerializer, ArizaModelSerializer, JinoyatIshiSerializer, ProfileSerializer
 from api.permissions import IsSuperUser, IsOwnerOrReadOnly, IsJtonOwner
 from api.models import CustomUser, ArizaModel, JinoyatIshiModel
 from api.paginations import CustomPagination
@@ -56,3 +56,12 @@ class JinoyatIshiViewSet(ModelViewSet):
         if request.data.search_fields:
             return request.data.search_fields
         return ['fish', 'jshir', 'phone_number', ]
+
+
+class ProfileViewSet(ModelViewSet):
+    permission_classes = [IsAuthenticated, IsJtonOwner, ]
+    queryset = CustomUser.objects.all()
+    serializer_class = ProfileSerializer
+
+    def get_queryset(self):
+        return self.queryset.filter(id=self.request.user.id)
