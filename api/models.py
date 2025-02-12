@@ -77,6 +77,7 @@ class CustomUser(BaseModel, AbstractUser):
     father_name = models.CharField(max_length=50, blank=True, null=True)
     phone_number = models.CharField(max_length=13, unique=True)
     jton = models.CharField(max_length=8, unique=True)
+    lavozimi = models.CharField(max_length=250, blank=True, null=True)
     ishjoylari = models.ManyToManyField(Boshqarma, related_name='ishjoylari', blank=True)
 
     def __str__(self):

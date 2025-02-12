@@ -29,7 +29,8 @@ class ProfileSerializer(ModelSerializer):
 
     class Meta:
         model = CustomUser
-        fields = ['id', 'phone_number', 'jton', 'first_name', 'last_name', 'father_name', 'phone_number', 'boshqarma',
+        fields = ['id', 'phone_number', 'jton', 'first_name', 'last_name', 'father_name', 'lavozimi', 'phone_number',
+                  'boshqarma',
                   'boshqarma',
                   'bolim',
                   'unvon',
@@ -56,6 +57,7 @@ class CustomUserSerializer(ModelSerializer):
                   'boshqarma',
                   'bolim',
                   'unvon',
+                  'lavozimi',
                   'ishjoylari']
         depth = 1
 
