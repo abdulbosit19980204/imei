@@ -1,6 +1,6 @@
 from rest_framework.serializers import ModelSerializer
 from rest_framework import serializers
-from api.models import CustomUser, Bolim, Boshqarma, Unvon, ArizaModel, ClientData, JinoyatIshiModel
+from api.models import CustomUser, Bolim, Boshqarma, Unvon, ArizaModel, ClientData, JinoyatIshiModel, LostDeviceModel
 
 
 class BoshqarmaSerializer(ModelSerializer):
@@ -175,3 +175,21 @@ class JinoyatIshiSerializer(ModelSerializer):
         validated_data['author'] = self.context['request'].user
         jinoyat = JinoyatIshiModel.objects.create(**validated_data)
         return jinoyat
+
+
+class LostDeviceSerializer(ModelSerializer):
+    author = ArizachiSerializer(read_only=True)
+
+    class Meta:
+        model = LostDeviceModel
+        fields = [
+            'serial_number', 'imei', 'last_simcard', 'soni', 'model', 'zavod', 'rangi', 'tegishlilik', 'xususiyatlari',
+            'ishlab_chiqarilgan_yili', 'device_rasmmi', 'xujat_raqami', 'tashkilot', 'xudud', 'organ', 'modda', 'qism',
+            'band', 'gruhga_oid', 'nomlanishi', 'rusumi', 'sababi', 'xisob_turi', 'author'
+        ]
+        depth = 1
+
+    def create(self, validated_data):
+        validated_data['author'] = self.context['request'].user
+        lostdevice = LostDeviceModel.objects.create(**validated_data)
+        return lostdevice

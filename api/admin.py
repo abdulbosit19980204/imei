@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 
 from api.models import Boshqarma, CustomUser, Unvon, Bolim, ClientData, ArizaModel, \
-    JinoyatIshiModel
+    JinoyatIshiModel, LostDeviceModel, Rusumi, XisobTuri, GuruhgaOid, Nomlanishi, XisobgaQoyishSababi
 
 
 class BoshqarmaAdmin(admin.ModelAdmin):
@@ -90,3 +90,9 @@ admin.site.register(CustomUser, CustomUserAdmin)
 admin.site.register(ClientData, ClientDataAdmin)
 admin.site.register(ArizaModel, ArizaModelAdmin)
 admin.site.register(JinoyatIshiModel, JinoyatIshiModelAdmin)
+admin.site.register(LostDeviceModel)
+admin.site.register(Rusumi)
+admin.site.register(XisobTuri)
+admin.site.register(GuruhgaOid)
+admin.site.register(Nomlanishi)
+admin.site.register(XisobgaQoyishSababi)

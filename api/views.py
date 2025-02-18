@@ -3,9 +3,10 @@ from rest_framework.permissions import IsAuthenticated
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter, OrderingFilter
 
-from api.serializers import CustomUserSerializer, ArizaModelSerializer, JinoyatIshiSerializer, ProfileSerializer
+from api.serializers import CustomUserSerializer, ArizaModelSerializer, JinoyatIshiSerializer, ProfileSerializer, \
+    LostDeviceSerializer
 from api.permissions import IsSuperUser, IsOwnerOrReadOnly, IsJtonOwner
-from api.models import CustomUser, ArizaModel, JinoyatIshiModel
+from api.models import CustomUser, ArizaModel, JinoyatIshiModel, LostDeviceModel
 from api.paginations import CustomPagination
 
 
@@ -65,3 +66,14 @@ class ProfileViewSet(ModelViewSet):
 
     def get_queryset(self):
         return self.queryset.filter(id=self.request.user.id)
+
+
+class LostDeviceRegisterViewSet(ModelViewSet):
+    permission_classes = [IsAuthenticated, ]
+    queryset = LostDeviceModel.objects.all()
+    serializer_class = LostDeviceSerializer
+    filter_backends = [SearchFilter, OrderingFilter, DjangoFilterBackend]
+    filterset_fields = ['is_deleted', 'author']
+    search_fields = ['imei', 'serial_number', 'last_simcard', ]
+    ordering_fields = ['zavod', 'created_at', 'updated_at', 'model']
+    pagination_class = CustomPagination

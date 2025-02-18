@@ -15,5 +15,7 @@ class CustomPagination(PageNumberPagination):
             'current_page': self.page.number,
             'next': self.get_next_link() is not None,
             'previous': self.get_previous_link() is not None,
+            'next_id': self.page.next_page_number() if self.page.has_next() else None,
+            'previous_id': self.page.previous_page_number() if self.page.has_previous() else None,
             'data': data,
         })

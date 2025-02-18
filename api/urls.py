@@ -1,6 +1,6 @@
 from django.urls import path
 from rest_framework import routers
-from api.views import CustomUserViewSet, ArizaViewSet, JinoyatIshiViewSet, ProfileViewSet
+from api.views import CustomUserViewSet, ArizaViewSet, JinoyatIshiViewSet, ProfileViewSet, LostDeviceRegisterViewSet
 from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView, SpectacularSwaggerView
 
 urlpatterns = [
@@ -14,4 +14,5 @@ router.register('users', CustomUserViewSet, basename='users')
 router.register('profile', ProfileViewSet, basename='profile')
 router.register('ariza', ArizaViewSet, basename='ariza')
 router.register('jinoyatishi', JinoyatIshiViewSet, basename='jinoyatishi')
+router.register(r'lostdeviceregister', LostDeviceRegisterViewSet, basename='lostdeviceregister')
 urlpatterns += router.urls

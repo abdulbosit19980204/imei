@@ -146,3 +146,74 @@ class JinoyatIshiModel(BaseModel, models.Model):
 
     def __str__(self):
         return self.fish
+
+
+class XisobgaQoyishSababi(BaseModel, models.Model):
+    author = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    sabab_name = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.sabab_name
+
+
+class XisobTuri(BaseModel, models.Model):
+    author = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    tur_nomi = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.tur_nomi
+
+
+class GuruhgaOid(BaseModel, models.Model):
+    author = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    device_type = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.device_type
+
+
+class Nomlanishi(BaseModel, models.Model):
+    author = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    namen = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.namen
+
+
+class Rusumi(BaseModel, models.Model):
+    author = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    name = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.name
+
+
+class LostDeviceModel(BaseModel, models.Model):
+    author = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    serial_number = models.CharField(max_length=255, blank=True, null=True)
+    imei = models.CharField(max_length=255, blank=True, null=True)
+    last_simcard = models.CharField(max_length=255, blank=True, null=True)
+    gruhga_oid = models.ForeignKey(GuruhgaOid, on_delete=models.SET_NULL, null=True)
+    nomlanishi = models.ForeignKey(Nomlanishi, on_delete=models.SET_NULL, null=True)
+    soni = models.CharField(max_length=255, blank=True, null=True)
+    rusumi = models.ForeignKey(Rusumi, on_delete=models.SET_NULL, null=True)
+    model = models.CharField(max_length=255, blank=True, null=True)
+    zavod = models.CharField(max_length=255, blank=True, null=True)
+    rangi = models.CharField(max_length=255, blank=True, null=True)
+    tegishlilik = models.CharField(max_length=255, blank=True, null=True)
+    xususiyatlari = models.TextField(blank=True, null=True)
+    ishlab_chiqarilgan_yili = models.PositiveIntegerField(blank=True, null=True)
+    device_rasmmi = models.ImageField(upload_to="media/device_rasmmi", blank=True, null=True)
+    sababi = models.ForeignKey(XisobgaQoyishSababi, on_delete=models.SET_NULL, null=True)
+    xisob_turi = models.ForeignKey(XisobTuri, on_delete=models.SET_NULL, null=True)
+    xujat_raqami = models.CharField(max_length=255, blank=True, null=True)
+    xujat_yaratilgan_sana = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+    tashkilot = models.CharField(max_length=255, blank=True, null=True)
+    xudud = models.CharField(max_length=255, blank=True, null=True)
+    organ = models.CharField(max_length=255, blank=True, null=True)
+    modda = models.CharField(max_length=255, blank=True, null=True)
+    qism = models.CharField(max_length=255, blank=True, null=True)
+    band = models.CharField(max_length=255, blank=True, null=True)
+
+    def __str__(self):
+        return f"{self.imei} {self.model}"
