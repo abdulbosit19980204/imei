@@ -217,3 +217,4 @@ class LostDeviceModel(BaseModel, models.Model):
 
     def __str__(self):
         return f"{self.imei} {self.model}"
+

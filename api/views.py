@@ -9,6 +9,13 @@ from api.permissions import IsSuperUser, IsOwnerOrReadOnly, IsJtonOwner
 from api.models import CustomUser, ArizaModel, JinoyatIshiModel, LostDeviceModel
 from api.paginations import CustomPagination
 
+from rest_framework.views import APIView
+from rest_framework.parsers import MultiPartParser
+from rest_framework.response import Response
+from rest_framework import status
+from django.http import HttpResponse
+import pandas as pd
+from io import BytesIO
 
 class CustomUserViewSet(ModelViewSet):
     permission_classes = [IsJtonOwner | IsSuperUser, ]
@@ -77,3 +84,45 @@ class LostDeviceRegisterViewSet(ModelViewSet):
     search_fields = ['imei', 'serial_number', 'last_simcard', ]
     ordering_fields = ['zavod', 'created_at', 'updated_at', 'model']
     pagination_class = CustomPagination
+
+
+class ExcelUploadView(APIView):
+    parser_classes = [MultiPartParser]
+
+    def post(self, request, format=None):
+        if 'file' not in request.data:
+            return Response({"error": "Fayl yuklanmadi"}, status=status.HTTP_400_BAD_REQUEST)
+
+        excel_file = request.FILES['file']
+        try:
+            # Excel faylini pandas yordamida o‘qish
+            df = pd.read_excel(excel_file, engine='openpyxl')
+            data = df.to_dict(orient='records')  # Ma’lumotlarni JSON formatiga o‘tkazish
+            return Response({"data": data}, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class ExportExcelView(APIView):
+    def get(self, request, format=None):
+        # Ma’lumotlarni tayyorlash (masalan, modeldan olish)
+        data = [
+            {"id": 1, "name": "Ali", "age": 25},
+            {"id": 2, "name": "Vali", "age": 30},
+        ]
+
+        # Pandas DataFrame ga aylantirish
+        df = pd.DataFrame(data)
+
+        # Excel faylini yaratish
+        buffer = BytesIO()
+        df.to_excel(buffer, index=False, engine='openpyxl')
+        buffer.seek(0)
+
+        # HttpResponse orqali faylni qaytarish
+        response = HttpResponse(
+            buffer.getvalue(),
+            content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        )
+        response['Content-Disposition'] = 'attachment; filename="data.xlsx"'
+        return response
