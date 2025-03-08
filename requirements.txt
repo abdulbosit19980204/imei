@@ -18,7 +18,9 @@ django-jazzmin==3.0.1
 djangorestframework==3.15.2
 djangorestframework-simplejwt==5.3.1
 djoser==2.3.1
+drf-excel==2.5.3
 drf-spectacular==0.28.0
+et_xmlfile==2.0.0
 frozenlist==1.5.0
 idna==3.10
 inflection==0.5.1
@@ -27,6 +29,7 @@ jsonschema-specifications==2024.10.1
 multidict==6.1.0
 numpy==2.2.3
 oauthlib==3.2.2
+openpyxl==3.1.5
 pandas==2.2.3
 pillow==11.0.0
 propcache==0.2.1
